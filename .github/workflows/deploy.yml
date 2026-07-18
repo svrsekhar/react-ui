@@ -10,6 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: docker build . -t sapehome/react_apps
+      - run: docker build . -t sapehome/react-ui
       - run: echo "${{secrets.DOCKERHUB_TOKEN}}" | docker login -u {{secrets.DOCKERHUB_USER}} --password-stdin
-      - run: docker push sapehome/react_apps:latest
+      - run: docker push sapehome/react-ui:tagname
