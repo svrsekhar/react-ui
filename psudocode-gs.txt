@@ -1,0 +1,48 @@
+function getProducts(req) {
+  var itemCatId = req?.paramaeter?.itemCategory || "";
+  var activeDoc = SpreadsheetApp.getActiveSpreadsheet();
+  var prodSheet = activeDoc.getSheetByName("ProdList");
+  let catSheet = activeDoc.getSheetByName("ProdCats");
+  var prodSheetValues = prodSheet.getDataRange().getValues();
+  let catList = catSheet.getDataRange().getValues();
+
+  var prodList = [];
+
+  for(var i=1;i < prodSheetValues.length;i++){
+    var payload = {};
+    payload["itemName"] = prodSheetValues[i][0];
+    payload["itemDesc"] = prodSheetValues[i][1];
+    payload["itemPrice"] = prodSheetValues[i][2];
+    var catId = catList.find(cat => cat[1] === prodSheetValues[i][3])?.[0] || 0;
+    payload["catId"] = catId; 
+
+    prodList.push(payload);
+
+  }
+
+  if(itemCatId > 0){
+    var filteredList = prodList.filter(item => item.catId === itemCatId);
+    return ContentService.createTextOutput(JSON.stringify({data:prodList})).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({data:prodList})).setMimeType(ContentService.MimeType.JSON);
+  
+}
+
+function getCategories(){
+  var activeDoc = SpreadsheetApp.getActiveSpreadsheet();
+  let catSheet = activeDoc.getSheetByName("ProdCats");
+  let catListData = catSheet.getDataRange().getValues();
+  let catList = [];
+
+  for(let i = 1; i< catListData.length; i++){
+    let payload = {};
+    payload["catId"]= catListData[i][0];
+    payload["catName"]= catListData[i][1];
+
+    catList.push(payload);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({data:catList})).setMimeType(ContentService.MimeType.JSON);
+
+}

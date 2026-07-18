@@ -1,0 +1,15 @@
+name: Deploy
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build . -t sapehome/react_apps
+      - run: echo "${{secrets.DOCKERHUB_TOKEN}}" | docker login -u {{secrets.DOCKERHUB_USER}} --password-stdin
+      - run: docker push sapehome/react_apps:latest
